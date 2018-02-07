@@ -56,12 +56,6 @@ function createSnake(){
     set(snakeX, snakeY, "snake");
 }
 
-function init(){
-    createMap();
-    createSnake();
-    createFruit();
-}
-
 function gameLoop(){
     if(running && !gameOver){
         update();
@@ -76,6 +70,12 @@ function get(x, y){
 
 function getType(x, y){
     return get(x, y).getAttribute("class");
+}
+
+function init(){
+    createMap();
+    createSnake();
+    createFruit();
 }
 
 function set(x, y, value){
