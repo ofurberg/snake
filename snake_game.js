@@ -1,4 +1,4 @@
-//pre settings
+//game settings
 var snakeX = 2; // starting x position for snake
 var snakeY = 2; // starting x position for snake
 var height = 28; // height on the containing box
@@ -19,21 +19,19 @@ var tempdir = direction; // temporary direction, that fixes issue of players tur
 var int;
 var score = 0; // game score
 
-
-/**
-* entry point of the game
-*/
-function run(){
-    init();
-    int = setInterval(gameLoop, interval);
+function createFruit(){
+    var found = false;
+    while(!found && (length < (width-2) * (height-2) + 1)){
+        var appleX = rand(1, width-1);
+        var appleY = rand(1, height-1);
+        if(getType(appleX, appleY) == "blank"){
+            found = true;
+        }
+    }
+    set(appleX, appleY, "apple");
+    fX = appleX;
+    fY = appleY;
 }
-
-function init(){
-    createMap();
-    createSnake();
-    createFruit();
-}
-
 /**
 * Generates the map for the snake
 * Breaks if you put br after opening <table> and not after closing
@@ -58,61 +56,11 @@ function createSnake(){
     set(snakeX, snakeY, "snake");
 }
 
-function get(x,y){
-    return document.getElementById(x+"-"+y);
+function init(){
+    createMap();
+    createSnake();
+    createFruit();
 }
-
-function set(x,y,value){
-    if(x != null && y != null)
-        get(x,y).setAttribute("class", value);
-}
-
-function rand(min,max){
-    return Math.floor(Math.random() * (max - min) + min);
-}
-
-function getType(x,y){
-    return get(x,y).getAttribute("class");
-}
-
-function createFruit(){
-    var found = false;
-    while(!found && (length < (width-2)*(height-2)+1)){
-        var appleX = rand(1,width-1);
-        var appleY = rand(1,height-1);
-        if(getType(appleX, appleY) == "blank"){
-            found = true;
-        }
-    }
-    set(appleX, appleY, "apple");
-    fX = appleX;
-    fY = appleY;
-}
-
-/**
- * NOTE: notice use of new variable tempdir
- */
-window.addEventListener("keypress", function key(event){
-    //if key is W set direction up
-    var key = event.keyCode;
-    if(direction != -1 && (key == 119 || key == 87)){
-        tempdir = 0;
-    //if key is S set direction down
-    } else if(direction != 0 && (key == 115 || key == 83)){
-        tempdir = -1;
-    //if key is A set direction left
-    } else if(direction != 2 && (key == 97 || key == 65)){
-        tempdir = 1;
-    //if key is D set direction right
-    } else if(direction != 1 && (key == 100 || key == 68)){
-        tempdir = 2;
-    }
-    if(!running) {
-        running = true;
-    } else if(key == 32) {
-        running = false;
-    }
-});
 
 function gameLoop(){
     if(running && !gameOver){
@@ -122,8 +70,33 @@ function gameLoop(){
     }
 }
 
+function get(x, y){
+    return document.getElementById(x+"-"+y);
+}
+
+function getType(x, y){
+    return get(x, y).getAttribute("class");
+}
+
+function set(x, y, value){
+    if(x != null && y != null)
+        get(x, y).setAttribute("class", value);
+}
+
+function rand(min, max){
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
 /**
- * NOTE: notice use of new variable tempdir
+* entry point of the game
+*/
+function run(){
+    init();
+    int = setInterval(gameLoop, interval);
+}
+
+/**
+ * updates the state of the game
  */
 function update(){
     direction = tempdir;
@@ -178,5 +151,31 @@ function updateTail(){
     tailX[0] = snakeX;
     tailY[0] = snakeY;
 }
+
+
+/**
+ * NOTE: notice use of new variable tempdir
+ */
+window.addEventListener("keypress", function key(event){
+    //if key is W set direction up
+    var key = event.keyCode;
+    if(direction != -1 && (key == 119 || key == 87)){
+        tempdir = 0;
+    //if key is S set direction down
+    } else if(direction != 0 && (key == 115 || key == 83)){
+        tempdir = -1;
+    //if key is A set direction left
+    } else if(direction != 2 && (key == 97 || key == 65)){
+        tempdir = 1;
+    //if key is D set direction right
+    } else if(direction != 1 && (key == 100 || key == 68)){
+        tempdir = 2;
+    }
+    if(!running) {
+        running = true;
+    } else if(key == 32) {
+        running = false;
+    }
+});
 
 run();
